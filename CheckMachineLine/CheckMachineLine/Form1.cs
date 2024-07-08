@@ -108,6 +108,7 @@ namespace CheckMachineLine
                         //process.StartInfo.Arguments = "/C putty -ssh -l " + txtuser.Text.Trim() + " -pw " + txtPwd.Text.Trim() + " -m command.txt " + item;
                         process.StartInfo.Arguments = "/C plink -batch -ssh -l " + txtuser.Text.Trim() + " -pw " + txtPwd.Text.Trim() + " -m command.txt " + item;
                         process.Start();
+                        
 
 
                     }
@@ -124,18 +125,23 @@ namespace CheckMachineLine
                 }
                 string machineName = "may"+i.ToString();
                 var date = DateTime.Today.Date.ToShortDateString().Substring(0,1);
-                if (date == "1")
+                /*if (date == "1")
                 {
-                    //string path = @"E:\alldata\" + machineName + @"\" + DateTime.Now.Year.ToString() + @"\" + DateTime.Now.Month.ToString().PadLeft(2, '0') + @"\" + DateTime.Today.AddDays(-1).Day.ToString().PadLeft(2, '0') + @"\export";
+                    
                     string path = @"E:\alldata\" + machineName + @"\" + DateTime.Now.Year.ToString() + @"\" + DateTime.Today.AddMonths(-3).Month.ToString().PadLeft(2,'0');
                     DeleteDir(path);
                 }
+                else { 
+                }*/
+                if (date != "1" )
+                {
+                    string path = @"E:\alldata\" + machineName + @"\" + DateTime.Now.Year.ToString() + @"\" + DateTime.Now.Month.ToString().PadLeft(2, '0') + @"\" + DateTime.Today.AddDays(-1).Day.ToString().PadLeft(2, '0') + @"\export";
+                    DeleteFile(path);
+                }
                 
-                
-                //DeleteFile(path);
             }
 
-            
+
 
         }
 
@@ -158,7 +164,7 @@ namespace CheckMachineLine
                 }
             }catch(Exception ex)
             {
-                
+                Console.Write(ex.ToString());
             }
             
         }
