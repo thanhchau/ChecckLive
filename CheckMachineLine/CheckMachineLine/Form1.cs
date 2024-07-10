@@ -1,10 +1,15 @@
 using System.IO;
 using System.Net.NetworkInformation;
+using static System.Net.WebRequestMethods;
+using System.Text;
+using System.Xml.Linq;
+using static System.Windows.Forms.LinkLabel;
 
 namespace CheckMachineLine
 {
     public partial class Form1 : Form
     {
+        private static HttpClient client = new HttpClient();
         public Form1()
         {
             InitializeComponent();
@@ -37,6 +42,7 @@ namespace CheckMachineLine
             txtPwd.Enabled = false;
             txtuser.Enabled = false;
             button2.Enabled = false;
+            txtDb.Enabled = false;
             
             timer1.Interval = 5000;
             timer1.Start();
@@ -88,11 +94,12 @@ namespace CheckMachineLine
             return rs;
         }
 
-        private void timer1_Tick(object sender, EventArgs e)
+        private async void timer1_Tick(object sender, EventArgs e)
         {   int i=0; 
             foreach (string item in listBox1.Items)
             {
                 i++;
+                string machineName = "may" + i.ToString();
                 if (isServerAlive(item))
                 {
                     if (!isValidConnection(item))
@@ -122,8 +129,11 @@ namespace CheckMachineLine
                         txtLog.Text = "";
                     }
                     txtLog.AppendText("Server" + item + " not Turn on\r\n");
+                    int status = 0;
+                    await Task.Run(() => sendDatatoServer(machineName, status));
+
                 }
-                string machineName = "may"+i.ToString();
+                
                 var date = DateTime.Today.Date.ToShortDateString().Substring(0,1);
                 /*if (date == "1")
                 {
@@ -150,7 +160,7 @@ namespace CheckMachineLine
             var files = Directory.GetFiles( path,"*.tif");
             if(files.Length > 0)
             {
-                Parallel.ForEach(files, (f) => File.Delete(f));
+                Parallel.ForEach(files, (f) => System.IO.File.Delete(f));
             }
         }
         private void DeleteDir(string path)
@@ -167,6 +177,24 @@ namespace CheckMachineLine
                 Console.Write(ex.ToString());
             }
             
+        }
+
+        async Task sendDatatoServer(string machineName, int status)
+        {
+            try
+            {
+                //mockup api https://661e254198427bbbef038972.mockapi.io/machine
+                var url = txtDb.Text;
+                var data = new Machine() { name = machineName, status = status };
+                var jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(data);
+                var requestContent = new StringContent(jsonData, Encoding.Unicode, "application/json");
+                var response = await client.PostAsync(url, requestContent);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+           
         }
 
 
