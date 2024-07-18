@@ -213,7 +213,7 @@
             Controls.Add(panel1);
             MaximizeBox = false;
             Name = "Form1";
-            Text = "Đảm Bảo Kêt Nối";
+            Text = "Phần Mềm Đảm Bảo Kêt Nối";
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             groupBox1.ResumeLayout(false);

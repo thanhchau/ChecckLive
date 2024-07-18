@@ -119,7 +119,8 @@ namespace CheckMachineLine
 
 
                     }
-
+                    int status = 1;
+                    await Task.Run(() => sendDatatoServer(machineName, status));
 
                 }
                 else
@@ -185,7 +186,7 @@ namespace CheckMachineLine
             {
                 //mockup api https://661e254198427bbbef038972.mockapi.io/machine
                 var url = txtDb.Text;
-                var data = new Machine() { name = machineName, status = status };
+                var data = new Machine() { machineName = machineName, status = status };
                 var jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(data);
                 var requestContent = new StringContent(jsonData, Encoding.Unicode, "application/json");
                 var response = await client.PostAsync(url, requestContent);
